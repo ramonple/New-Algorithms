@@ -1,0 +1,30 @@
+import numpy as np
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from rulefit import RuleFit
+
+# Load or create your data
+# Example: X_train and y_train should already be prepared
+X_train = np.random.rand(100, 10)  # Example feature set
+y_train = np.random.randint(0, 2, size=100)  # Example target
+
+# Step 1: Train a Random Forest model to generate rules
+rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_model.fit(X_train, y_train)
+
+# Step 2: Extract rules using RuleFit
+rulefit = RuleFit()
+rulefit.fit(X_train, y_train, tree_model=rf_model)  # Use the RF model to generate rules
+
+# Step 3: Make predictions
+y_pred = rulefit.predict(X_train)
+
+# Step 4: View the rules generated
+rules = rulefit.get_rules()
+print(rules)
+
+# Step 5: Interpret the rules (e.g., top 10 most important rules)
+top_rules = np.argsort(rulefit.coef_)[::-1][:10]  # Sorting by coefficients (importance)
+print("Top 10 rules:")
+for i in top_rules:
+    print(rules.iloc[i])
